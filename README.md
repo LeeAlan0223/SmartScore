@@ -1,7 +1,7 @@
 # SmartScore 成績管理系統
 
 ![version](https://img.shields.io/badge/version-v2.0-blue)
-![language](https://img.shields.io/badge/language-C-lightgrey)
+![language](https://img.shields.io/badge/language-C++-lightgrey)
 ![status](https://img.shields.io/badge/status-developing-yellow)
 
 版本：v2.0
