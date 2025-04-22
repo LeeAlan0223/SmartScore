@@ -11,10 +11,11 @@
  // 用了int形式的函式，有return(回傳值)這裡用於檢查執行是否有錯誤 
 int input_scores(int arr[], int n,int *totlo);
 
- // 下列各個模組的函式原型宣告(因為不需要回傳直用void形式即可) 
+ // 下列各個模組的函式原型宣告(因為不需要回傳直用void形式即可)
+void number_of_people(int *number); 
 void output_scores(int arr[], int n,int *max_score,int *min_score,int *max_number,int *min_number ,double *average_score);
 void ranked_and_distribution(int arr[], int n,int Grade_distribution[]);
-void save_scores_to_file(int arr[], int n,int *max_score,int *min_score,int *max_number,int *min_number ,double *average_score);
+void save_scores_to_file(int arr[], int n,int *max_score,int *min_score,int *max_number,int *min_number ,double *average_score,int Grade_distribution[]);
 void clear(void);
 void error_pause(void);
 void pause(void);
@@ -33,31 +34,8 @@ int main(void){
 	 
 	 
 	// 使用者輸入考試人數(小更動:用while可以錯誤重新輸入) 
-	while(true){
-		printf("---------|輸入考試人數|---------\n");
-		printf("請輸入考試人數:");
-		if( scanf("%d", &number) != 1){
-		 
-		printf("\n-------------|錯誤|-------------\n");
-		
-		printf("你輸入的不是整數喔！\n");
-		printf("請重新輸入考試人數!\n");
-		error_pause();
-		continue;	//輸入錯誤就重新輸入
-		
-		}
-		
-		// 基本輸入檢查：人數不得為負
-		if (number < 0) {
-			printf("\n-------------|錯誤|-------------\n");
-			printf("人數不能是負數\n");
-			printf("請重新輸入考試人數!\n");
-			error_pause();	
-			continue;	//輸入錯誤就重新輸入 
-		}
-		printf("\n");
-		break;	
-	}		
+	number_of_people(&number);
+	 	
 	int score[number]; //宣告陣列變數範圍 
 	
 	while(true){// 使用者輸入考試成績(小更動:用while可以錯誤重新輸入) 
@@ -90,9 +68,39 @@ int main(void){
 	printf("\t      暫無\t\n");
 	printf("\n");
 	printf("--------------------------------\n");
-	save_scores_to_file( score, number, &max_s, &min_s, &max_n, &min_n, &average);
+	save_scores_to_file( score, number, &max_s, &min_s, &max_n, &min_n, &average, Grade_distribution);
+	printf("請按Enter結束...\n");	
 	pause();
 	return 0;
+}
+
+void number_of_people(int *number){
+	
+		while(true){
+		printf("---------|輸入考試人數|---------\n");
+		printf("請輸入考試人數:");
+		if( scanf("%d", number) != 1){
+		 
+		printf("\n-------------|錯誤|-------------\n");
+		
+		printf("你輸入的不是整數喔！\n");
+		printf("請重新輸入考試人數!\n");
+		error_pause();
+		continue;	//輸入錯誤就重新輸入
+		
+		}
+		
+		// 基本輸入檢查：人數不得為負
+		if (*number < 0) {
+			printf("\n-------------|錯誤|-------------\n");
+			printf("人數不能是負數\n");
+			printf("請重新輸入考試人數!\n");
+			error_pause();	
+			continue;	//輸入錯誤就重新輸入 
+		}
+		printf("\n");
+		break;	
+	}
 }
 
 int input_scores(int arr[], int n,int *totlo){
@@ -188,7 +196,7 @@ void ranked_and_distribution(int arr[], int n,int Grade_distribution[]){
 	}
 }
 
-void save_scores_to_file(int arr[], int n,int *max_score,int *min_score,int *max_number,int *min_number ,double *average_score){
+void save_scores_to_file(int arr[], int n,int *max_score,int *min_score,int *max_number,int *min_number ,double *average_score ,int Grade_distribution[]){
 	
 	FILE *f = fopen("scores.txt", "a");
 	
@@ -212,38 +220,12 @@ void save_scores_to_file(int arr[], int n,int *max_score,int *min_score,int *max
 	
 	fprintf(f,"---------|班級排名分布|---------\n");
 	
-		int Grade_distribution[10] = {0}; // 分布區間：100~90, 89~80, ..., 9~0
-
 	// 區間標籤
 	const char* Rank[10] = {
 		"100~90:", "89~80: ", "79~70: ", "69~60: ",
 		"59~50: ", "49~40: ", "39~30: ", "29~20: ",
 		"19~10: ", "9~0:   "
 	};
-
-	// 統計每位同學的成績分布到對應區間
-	for (int x = 0; x < n; x++) {
-		if (arr[x] >= 90)
-			Grade_distribution[0]++;
-		else if (arr[x] >= 80)
-			Grade_distribution[1]++;
-		else if (arr[x] >= 70)
-			Grade_distribution[2]++;
-		else if (arr[x] >= 60)
-			Grade_distribution[3]++;
-		else if (arr[x] >= 50)
-			Grade_distribution[4]++;
-		else if (arr[x] >= 40)
-			Grade_distribution[5]++;
-		else if (arr[x] >= 30)
-			Grade_distribution[6]++;
-		else if (arr[x] >= 20)
-			Grade_distribution[7]++;
-		else if (arr[x] >= 10)
-			Grade_distribution[8]++;
-		else
-			Grade_distribution[9]++;
-	}
 
 	// 顯示分布圖
 	for (int i = 0; i < 10; i++) {
@@ -279,14 +261,13 @@ void clear(void){
 	#endif
 }
 
-void error_pause(void){
+void error_pause(void){	
 	printf("請按Enter繼續...\n");
 	pause();
 	clear();
 }
 
 void pause(void){
-	printf("請按Enter結束...\n");
 	printf("--------------------------------\n");
 	while (getchar() != '\n');	// 清除緩衝區的字符
     getchar();	// 等待使用者按下 Enter 鍵 
